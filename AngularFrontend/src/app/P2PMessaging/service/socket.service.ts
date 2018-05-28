@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
+import {environment} from '../../../environments/environment.prod';
 
-const WEBSOCKETURL = 'ws://localhost:8090/ws/subscribe';
+const WEBSOCKETURL = 'ws://' + environment.urlMessageServer + '/ws/subscribe';
 
 @Injectable()
 export class SocketService {
@@ -24,7 +25,7 @@ export class SocketService {
   subscribe(username: string) {
 
     this.wsMessaging.onopen = (() => {
-      console.log('subscribing to timeline of:' + username);
+      console.log('subscribing to messages to:' + username);
       this.wsMessaging.send(username);
     });
 
