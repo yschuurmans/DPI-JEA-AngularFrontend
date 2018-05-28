@@ -7,5 +7,6 @@ export class Envelope {
   }
 
   sender: string;
+  target: string;
   message: string;
 }

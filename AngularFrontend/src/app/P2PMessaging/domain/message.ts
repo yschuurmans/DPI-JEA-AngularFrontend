@@ -3,13 +3,15 @@ import {MessageContent} from './message-content';
 export class Message {
 
 
-  constructor(messageId: string, target: string, message: string) {
+  constructor(messageId: string, sender: string, target: string, messageContent: string) {
     this.messageId = messageId;
+    this.sender = sender;
     this.target = target;
-    this.messageContent = message;
+    this.messageContent = messageContent;
   }
 
   messageId: string;
+  sender: string;
   target: string;
   messageContent: string;
 }

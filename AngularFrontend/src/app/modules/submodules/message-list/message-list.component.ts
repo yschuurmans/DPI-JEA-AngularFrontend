@@ -28,23 +28,27 @@ export class MessageListComponent implements OnInit {
     this.socketService.subscribe(this.username).subscribe(
       msg => {
 
+        console.log('RECEIVED : ');
+        console.log(msg.data);
+
         const envelope: Envelope = JSON.parse(msg.data);
-        const message: Message = JSON.parse(envelope.message);
-        if (this.target === message.target) {
+        if (this.username === envelope.target) {
+          const message: Message = JSON.parse(envelope.message);
           const messageContent: MessageContent = JSON.parse(message.messageContent);
           const decryptedMessage: DecryptedMessage =
             new DecryptedMessage(
-              envelope.sender,
+              message.sender,
               message.target,
               message.messageId,
               messageContent.messageText);
 
 
-          console.log('RECEIVED : ');
-          console.log(msg.data);
           console.log(messageContent);
           this.messages.unshift(decryptedMessage);
           console.log(this.messages);
+        }
+        else {
+          console.log('message not intended for this user!');
         }
       }
     );

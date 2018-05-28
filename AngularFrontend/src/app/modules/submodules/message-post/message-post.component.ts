@@ -17,7 +17,8 @@ export class MessagePostComponent implements OnInit {
 
   messageText: string;
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService) {
+  }
 
   ngOnInit() {
 
@@ -25,15 +26,8 @@ export class MessagePostComponent implements OnInit {
 
   sendMessage() {
     console.log('sending message');
-    const messageContent = new MessageContent(this.messageText);
-    const message = new Message(Guid.create().toString() , this.target , JSON.stringify(messageContent));
-    const envelope = new Envelope(this.sender, JSON.stringify(message));
-
-    this.messageService.postMessage(envelope).subscribe(
-        x => this.messageSuccessfullyPosted()
-      );
-
-    }
+    this.messageService.sendMessage(this.sender, this.target, this.messageText);
+  }
 
   private messageSuccessfullyPosted() {
     this.messageText = '';

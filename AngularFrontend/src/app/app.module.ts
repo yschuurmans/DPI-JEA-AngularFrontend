@@ -10,6 +10,7 @@ import { MessagePostComponent } from './modules/submodules/message-post/message-
 import {FormsModule} from '@angular/forms';
 import {MessageService} from './P2PMessaging/service/message.service';
 import {SocketService} from './P2PMessaging/service/socket.service';
+import {RestMessageService} from './P2PMessaging/service/rest-message.service';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import {SocketService} from './P2PMessaging/service/socket.service';
     HttpClientModule,
     FormsModule,
   ],
-  providers: [MessageService, SocketService],
+  providers: [RestMessageService, MessageService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
