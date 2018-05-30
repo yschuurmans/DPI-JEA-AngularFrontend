@@ -1,3 +1,15 @@
-<p>
-  message-list works!
-</p>
+<div class="card">
+  <div class="card-header"><h3>Messages</h3></div>
+  <div class="card-body">
+
+    <ul class="media-list" *ngFor="let msg of messages">
+      <li class="userItem media">
+        <div class="media-body">
+          <div class="media-header">{{msg.sender}}</div>
+          <div class="media-content">{{msg.messageContent}}</div>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</div>

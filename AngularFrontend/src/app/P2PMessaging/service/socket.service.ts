@@ -28,7 +28,7 @@ export class SocketService {
       console.log('subscribing to messages to:' + username);
       this.wsMessaging.send(username);
     });
-
+    console.log('subscribed to messages to: ' + username);
     return Observable.create(
       (observer: Observer<MessageEvent>) => {
         this.wsMessaging.onmessage = observer.next.bind(observer);

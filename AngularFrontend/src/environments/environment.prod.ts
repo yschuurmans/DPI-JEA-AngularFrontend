@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  urlMessageServer: 'localhost:8090'
+  urlMessageServer: '192.168.99.100:8090'
 
 };
