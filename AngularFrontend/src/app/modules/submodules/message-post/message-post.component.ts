@@ -12,6 +12,9 @@ import {Guid} from 'guid-typescript';
 })
 export class MessagePostComponent implements OnInit {
 
+  @Input() addMessage: Function;
+  @Input() updateMessage: Function;
+
   @Input() target: string;
   @Input() sender: string;
 
@@ -26,7 +29,11 @@ export class MessagePostComponent implements OnInit {
 
   sendMessage() {
     console.log('sending message');
-    this.messageService.sendMessage(this.sender, this.target, this.messageText);
+    this.messageService.sendMessage(this.sender, this.target, this.messageText).subscribe(msg=> {
+      console.log('delivery status: ' + msg);
+
+      this.addMessage(msg);
+    });
   }
 
   private messageSuccessfullyPosted() {

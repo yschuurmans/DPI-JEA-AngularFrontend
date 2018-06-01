@@ -34,4 +34,12 @@ export class MessageListComponent implements OnInit {
     );
   }
 
+  addMessage(message: Message) {
+    console.log('add message');
+  }
+
+  updateMessage(message: Message) {
+    console.log('updateMessage');
+  }
+
 }

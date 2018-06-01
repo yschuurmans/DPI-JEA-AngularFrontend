@@ -1,4 +1,26 @@
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <div class="card">
+      <div class="card-header"><h3>Messages</h3></div>
+      <div class="card-body">
 
-<app-message-post target="test" sender="Youri"></app-message-post>
+        <div *ngIf="!initialized">
+          username:
+          <input name="username" type="text" id="username" class="col-12" [(ngModel)]="this.username">
 
-<app-message-list username="Youri" target="test"></app-message-list>
+          target:
+          <input name="target" type="text" id="target" class="col-12" [(ngModel)]="this.target">
+
+          <button class="btn btn-default" (click)="initialize()">OK</button>
+        </div>
+        <div *ngIf="initialized">
+          <app-message-post [updateMessage]="updateMessage" [addMessage]="addMessage" target="{{this.target}}" sender="{{this.username}}"></app-message-post>
+          <app-message-list #messageList username="{{this.username}}" target="{{this.target}}"></app-message-list>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
