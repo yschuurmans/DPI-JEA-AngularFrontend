@@ -34,12 +34,14 @@ export class MessageListComponent implements OnInit {
     );
   }
 
-  addMessage(message: Message) {
-    console.log('add message');
-  }
-
-  updateMessage(message: Message) {
-    console.log('updateMessage');
+  public updateMessageList(message: DecryptedMessage) {
+    for (const msg of this.messages) {
+      if (msg.messageId === message.messageId) {
+        msg.messageStatus = message.messageStatus;
+        return;
+      }
+    }
+    this.messages.unshift(message);
   }
 
 }

@@ -1,3 +1,3 @@
 export enum DeliveryStatus {
-  local, send, arived, failed
+  local, send, arrived, failed
 }

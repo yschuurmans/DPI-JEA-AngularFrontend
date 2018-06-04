@@ -1,18 +1,19 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {environment} from '../../../environments/environment.prod';
-import {Message} from '../../P2PMessaging/domain/message';
+import {AfterViewInit, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {MessageListComponent} from '../submodules/message-list/message-list.component';
+import {DecryptedMessage} from '../../P2PMessaging/domain/decrypted-message';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.css']
 })
-export class MessagesComponent implements OnInit {
-  @ViewChild(MessageListComponent) private messageList: MessageListComponent;
+export class MessagesComponent implements OnInit, AfterViewInit {
 
   constructor() { }
 
+  @ViewChildren(MessageListComponent)
+  public messageLists: QueryList<MessageListComponent>;
+  private messageList: MessageListComponent;
 
   username: string;
   target: string;
@@ -23,16 +24,18 @@ export class MessagesComponent implements OnInit {
     this.initialized = false;
   }
 
+  public ngAfterViewInit(): void {
+    this.messageLists.changes.subscribe((comps: QueryList <MessageListComponent>) => {
+          this.messageList = comps.first;
+    });
+  }
+
   initialize() {
     this.initialized = true;
   }
 
-  addMessage(message: Message) {
-    this.messageList.addMessage(message);
-  }
-
-  updateMessage(message: Message) {
-
+  updateMessage(message: DecryptedMessage) {
+    this.messageList.updateMessageList(message);
   }
 
 }

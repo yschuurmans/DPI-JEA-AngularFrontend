@@ -14,8 +14,8 @@
           <button class="btn btn-default" (click)="initialize()">OK</button>
         </div>
         <div *ngIf="initialized">
-          <app-message-post [updateMessage]="updateMessage" [addMessage]="addMessage" target="{{this.target}}" sender="{{this.username}}"></app-message-post>
-          <app-message-list #messageList username="{{this.username}}" target="{{this.target}}"></app-message-list>
+          <app-message-post (messageUpdate)="updateMessage($event)" target="{{this.target}}" sender="{{this.username}}"></app-message-post>
+          <app-message-list username="{{this.username}}" target="{{this.target}}"></app-message-list>
         </div>
 
       </div>

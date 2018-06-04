@@ -18,32 +18,30 @@ export class MessageService {
   constructor(private restMessageService: RestMessageService, private socketService: SocketService) {
   }
 
-  sendMessage(sender: string, target: string, msgText: string): Observable<Message> {
+  sendMessage(sender: string, target: string, msgText: string): Observable<DecryptedMessage> {
     const messageContent = new MessageContent(msgText);
     const message = new Message(Guid.create().toString(), sender, target, JSON.stringify(messageContent));
     const envelope = new Envelope(sender, JSON.stringify(message));
     this.setStoredMessage(message.messageId, message);
 
-    console.log('creating observable');
 
     return Observable.create(
-      (observer: Observer<Message>) => {
+      (observer: Observer<DecryptedMessage>) => {
 
-        console.log('posting message to gateway');
+        console.log('sending message with id: ' + message.messageId);
         this.restMessageService.postMessage(envelope).subscribe(
           msg => {
             message.messageStatus = DeliveryStatus.send;
-            observer.next(message);
+            observer.next(this.messageToDecryptedMessage(message));
             this.setStoredMessage(message.messageId, message);
           });
 
-        console.log('checking for arival of message: ' + message.messageId);
         let checksLeft = 5;
         const intervalID = setInterval(() => {
             const currentMsg = this.getStoredMessage(message.messageId);
-            if (currentMsg.messageStatus === DeliveryStatus.arived) {
+            if (currentMsg.messageStatus === DeliveryStatus.arrived) {
               window.clearInterval(intervalID);
-              currentMsg.messageStatus = DeliveryStatus.arived;
+              currentMsg.messageStatus = DeliveryStatus.arrived;
               observer.next(currentMsg);
               this.removeStoredMessage(currentMsg.messageId);
             }
@@ -76,6 +74,16 @@ export class MessageService {
     localStorage.removeItem('msg_' + messageGuid);
   }
 
+  messageToDecryptedMessage(message: Message) {
+    const messageContent: MessageContent = JSON.parse(message.messageContent);
+    return new DecryptedMessage(
+      message.sender,
+      message.target,
+      message.messageId,
+      messageContent.messageText,
+      message.messageStatus);
+  }
+
   subscribeNewMessages(username: string, target: string): Observable<DecryptedMessage> {
     return Observable.create(
       (observer: Observer<DecryptedMessage>) => {
@@ -89,19 +97,12 @@ export class MessageService {
               if (message.messageContent === 'confirm') {
                 console.log('received confirm message for: ' + message.messageId);
                 const toConfirm = this.getStoredMessage(message.messageId);
-                toConfirm.messageStatus = DeliveryStatus.arived;
+                toConfirm.messageStatus = DeliveryStatus.arrived;
                 this.setStoredMessage(message.messageId, toConfirm);
               } else {
-
-                const messageContent: MessageContent = JSON.parse(message.messageContent);
                 if (target === message.sender) {
-                  observer.next(
-                    new DecryptedMessage(
-                      message.sender,
-                      message.target,
-                      message.messageId,
-                      messageContent.messageText)
-                  );
+                  observer.next(this.messageToDecryptedMessage(message));
+                  this.sendConfirmMessage(message);
                 }
               }
 
@@ -111,6 +112,15 @@ export class MessageService {
           }
         );
       });
+  }
+
+  private sendConfirmMessage(message: Message) {
+    const msg: Message = new Message(message.messageId, null, null, 'confirm');
+    const env: Envelope = new Envelope(message.target, JSON.stringify(msg));
+
+
+    console.log('posting confirm message to gateway for: ' + msg.messageId);
+    this.restMessageService.postMessage(env).subscribe();
   }
 
 }
